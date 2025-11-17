@@ -1,0 +1,13 @@
+
+<!DOCTYPE html>
+<html>
+<head><title>Movies</title></head>
+<body>
+<h1>Películas</h1>
+<ul>
+    {% for m in movies %}
+    <li><a href="/movie/{{m.id}}">{{m.title}}</a></li>
+    {% endfor %}
+</ul>
+</body>
+</html>
