@@ -1,73 +1,72 @@
-{# frontend/templates/index.html #}
 {% extends 'base.html' %}
 
 {% block content %}
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-carousel">
-      {% if hero and hero|length > 0 %}
-        {% for m in hero %}
-          <div class="hero-item" style="background-image: url('{{ m.backdropPath or url_for('static', filename='images/back-default.jpg') }}')">
-            <div class="hero-overlay">
-              <div class="container hero-inner">
-                <h2 class="hero-title">{{ m.title }} <small>({{ m.year }})</small></h2>
-                <p class="hero-overview">{{ m.overview[:220] }}{% if m.overview|length > 220 %}...{% endif %}</p>
-                <a class="btn" href="{{ url_for('movie_detail', movie_id=m.movieId) }}">Ver detalles</a>
-              </div>
-            </div>
-          </div>
-        {% endfor %}
-      {% else %}
-        <div class="hero-item hero-placeholder">
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-carousel">
+    {% if hero and hero|length > 0 %}
+      {% for m in hero %}
+        <div class="hero-item" style="background-image: url('{{ m.backdropPath if m.backdropPath else url_for('static', filename='images/back-default.jpg') }}')">
           <div class="hero-overlay">
             <div class="container hero-inner">
-              <h2 class="hero-title">Explora películas y series</h2>
-              <p class="hero-overview">No hay elementos en el hero por ahora.</p>
+              <h2 class="hero-title">{{ m.title }} <small>({{ m.year }})</small></h2>
+              <p class="hero-overview">{{ m.overview[:220] }}{% if m.overview|length > 220 %}...{% endif %}</p>
+              <a class="btn" href="{{ url_for('movie_detail', movie_id=m.movieId) }}">Ver detalles</a>
             </div>
           </div>
         </div>
-      {% endif %}
+      {% endfor %}
+    {% else %}
+      <div class="hero-item hero-placeholder" style="background-image: url('{{ url_for('static', filename='images/back-default.jpg') }}')">
+        <div class="hero-overlay">
+          <div class="container hero-inner">
+            <h2 class="hero-title">Explora películas y series</h2>
+            <p class="hero-overview">No hay elementos en el hero por ahora.</p>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- RIELES DE PELÍCULAS -->
+{% for railTitle, items in rails %}
+  <section class="rail container">
+    <h3>{{ railTitle }}</h3>
+    <div class="rail-row">
+      {% for m in items %}
+        <div class="card-movie">
+          <a href="{{ url_for('movie_detail', movie_id=m.movieId) }}">
+            <img src="{{ m.posterPath if m.posterPath else url_for('static', filename='images/poster-default.jpg') }}" alt="{{ m.title }}">
+            <div class="card-info">
+              <strong>{{ m.title }}</strong>
+              <div class="muted">{{ m.year }}</div>
+            </div>
+          </a>
+        </div>
+      {% endfor %}
     </div>
   </section>
+{% endfor %}
 
-  <!-- RIELES DE PELÍCULAS -->
-  {% for railTitle, items in rails %}
-    <section class="rail container">
-      <h3>{{ railTitle }}</h3>
-      <div class="rail-row">
-        {% for m in items %}
-          <div class="card-movie">
-            <a href="{{ url_for('movie_detail', movie_id=m.movieId) }}">
-              <img src="{{ m.posterPath or url_for('static', filename='images/poster-default.jpg') }}" alt="{{ m.title }}">
-              <div class="card-info">
-                <strong>{{ m.title }}</strong>
-                <div class="muted">{{ m.year }}</div>
-              </div>
-            </a>
-          </div>
-        {% endfor %}
-      </div>
-    </section>
-  {% endfor %}
-
-  <!-- RIELES DE SERIES -->
-  {% for railTitle, items in series_rails %}
-    <section class="rail container">
-      <h3>{{ railTitle }}</h3>
-      <div class="rail-row">
-        {% for s in items %}
-          <div class="card-movie">
-            <a href="{{ url_for('tvshow_detail', show_id=s.showId) }}">
-              <img src="{{ s.posterPath or url_for('static', filename='images/poster-default.jpg') }}" alt="{{ s.title }}">
-              <div class="card-info">
-                <strong>{{ s.title }}</strong>
-                <div class="muted">{{ s.year }}</div>
-              </div>
-            </a>
-          </div>
-        {% endfor %}
-      </div>
-    </section>
-  {% endfor %}
+<!-- RIELES DE SERIES -->
+{% for railTitle, items in series_rails %}
+  <section class="rail container">
+    <h3>{{ railTitle }}</h3>
+    <div class="rail-row">
+      {% for s in items %}
+        <div class="card-movie">
+          <a href="{{ url_for('tvshow_detail', show_id=s.showId) }}">
+            <img src="{{ s.posterPath if s.posterPath else url_for('static', filename='images/poster-default.jpg') }}" alt="{{ s.title }}">
+            <div class="card-info">
+              <strong>{{ s.title }}</strong>
+              <div class="muted">{{ s.year }}</div>
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+{% endfor %}
 
 {% endblock %}
