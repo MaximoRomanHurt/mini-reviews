@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+
+  <h1>Explorar</h1>
+
+  <!-- FILTROS -->
+  <form id="filterForm" class="filter-box">
+    
+    <select id="type">
+      <option value="movies">Películas</option>
+      <option value="tvshows">Series</option>
+    </select>
+
+    <select id="genre">
+      <option value="">Género</option>
+      <option value="Acción">Acción</option>
+      <option value="Comedia">Comedia</option>
+      <option value="Drama">Drama</option>
+      <option value="Terror">Terror</option>
+      <option value="Romance">Romance</option>
+    </select>
+
+    <select id="year">
+      <option value="">Año</option>
+      {% for y in range(2025, 1970, -1) %}
+      <option value="{{ y }}">{{ y }}</option>
+      {% endfor %}
+    </select>
+
+    <select id="platform">
+      <option value="">Plataforma</option>
+      <option value="Netflix">Netflix</option>
+      <option value="Disney+">Disney+</option>
+      <option value="Amazon">Amazon</option>
+      <option value="HBO">HBO</option>
+    </select>
+
+    <select id="sort">
+      <option value="">Ordenar por</option>
+      <option value="year">Año</option>
+      <option value="alpha">A–Z</option>
+      <option value="popularity">Popularidad</option>
+      <option value="recent">Más reciente</option>
+    </select>
+
+    <button class="btn" type="submit">Filtrar</button>
+  </form>
+
+  <!-- RESULTADOS -->
+  <div id="results" class="media-grid"></div>
+
+</div>
+
+<script src="/static/explorar.js"></script>
+{% endblock %}

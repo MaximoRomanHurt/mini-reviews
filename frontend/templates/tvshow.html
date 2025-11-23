@@ -1,0 +1,31 @@
+{# frontend/templates/tvshow.html #}
+{% extends 'base.html' %}
+
+{% block content %}
+  <a href="/">← Volver</a>
+
+  <div class="movie-backdrop" style="background-image: url('{{ show.backdropPath or url_for('static', filename='images/back-default.jpg') }}')">
+    <div class="backdrop-overlay">
+      <div class="container movie-hero">
+        <img class="movie-poster" src="{{ show.posterPath or url_for('static', filename='images/poster-default.jpg') }}" alt="{{ show.title }}">
+        <div class="movie-meta">
+          <h1>{{ show.title }} <small>({{ show.year }})</small></h1>
+          <p class="muted">{{ show.genres | join(', ') }}</p>
+          <p>{{ show.overview }}</p>
+
+          <h3>Temporadas</h3>
+          {% if show.seasons and show.seasons|length > 0 %}
+            <ul>
+              {% for s in show.seasons %}
+                <li>Temporada {{ s.seasonNumber }} — {{ s.episodeCount }} episodios</li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="muted">Sin información de temporadas.</p>
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

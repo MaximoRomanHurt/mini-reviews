@@ -1,0 +1,63 @@
+{# frontend/templates/register.html #}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Registro</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Crear cuenta</h1>
+
+    <form id="registerForm">
+      <label>Nombre de usuario</label>
+      <input id="username" type="text" placeholder="Tu nombre" required>
+
+      <label>Email</label>
+      <input id="email" type="email" placeholder="ejemplo@correo.com" required>
+
+      <label>Password</label>
+      <input id="password" type="password" placeholder="Mínimo 6 caracteres" required minlength="6">
+
+      <label>Avatar (URL opcional)</label>
+      <input id="avatar" type="text" placeholder="https://...">
+
+      <button class="btn" type="submit">Registrar</button>
+    </form>
+
+    <p>¿Ya tienes cuenta? <a href="{{ url_for('login_page') }}">Inicia sesión</a></p>
+  </div>
+
+<script>
+const BACKEND_BASE = "{{ (os.environ.get('BACKEND_BASE') or 'http://localhost:4000/api') }}";
+
+document.getElementById('registerForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const payload = {
+    username: document.getElementById('username').value.trim(),
+    email: document.getElementById('email').value.trim(),
+    password: document.getElementById('password').value,
+    avatar: document.getElementById('avatar').value.trim()
+  };
+
+  const res = await fetch(BACKEND_BASE + '/auth/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+
+  const data = await res.json();
+  if (res.ok) {
+    // Guardar token y redirigir
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('user', JSON.stringify(data.user));
+    window.location.href = '/';
+  } else {
+    alert(data.message || 'Error registrando');
+  }
+});
+</script>
+</body>
+</html>

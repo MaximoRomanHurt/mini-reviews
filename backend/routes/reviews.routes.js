@@ -1,13 +1,8 @@
-
-import express from 'express';
-import { getAll, getByMovie, create, update, remove } from '../controllers/reviews.controller.js';
-
+const express = require("express");
 const router = express.Router();
+const controller = require("../controllers/reviews.controller");
 
-router.get('/', getAll);
-router.get('/:movieId', getByMovie);
-router.post('/', create);
-router.put('/:id', update);
-router.delete('/:id', remove);
+router.get("/:movieId", controller.getByMovie);   // HU-3
+router.post("/", controller.create);              // HU-4 ★ NUEVO
 
-export default router;
+module.exports = router;

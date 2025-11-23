@@ -1,24 +1,150 @@
+{% extends 'base.html' %}
 
-<!DOCTYPE html>
-<html>
-<head><title>{{movie.title}}</title></head>
-<body>
-<h1>{{movie.title}}</h1>
+{% block content %}
+<a href="/">← Volver</a>
 
-<h2>Reseñas</h2>
-<ul>
-{% for r in reviews %}
-    <li><b>{{r.username}}</b> ({{r.rating}}/5): {{r.text}}</li>
-{% endfor %}
-</ul>
+<div class="movie-backdrop" style="background-image: url('{{ movie.backdropPath }}')">
+  <div class="backdrop-overlay">
+    <div class="container movie-hero">
+      <img class="movie-poster" src="{{ movie.posterPath }}" alt="{{ movie.title }}">
 
-<h3>Agregar reseña</h3>
-<form method="POST" action="/add/{{movie.id}}">
-    <input name="username" placeholder="Tu nombre"><br>
-    <textarea name="text"></textarea><br>
-    <input type="number" name="rating" min="1" max="5"><br>
-    <button>Enviar</button>
-</form>
+      <div class="movie-meta">
+        <h1>{{ movie.title }} <small>({{ movie.year }})</small></h1>
+        <p class="muted">{{ movie.genres | join(', ') }}</p>
+        <p>{{ movie.overview }}</p>
 
-</body>
-</html>
+        <div class="rating-box">
+          {% if reviews %}
+            <h3>⭐ {{ reviews.average }} / 5</h3>
+            <p class="muted">{{ reviews.total }} reseñas</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- FORMULARIO DE RESEÑA -->
+<section class="container review-section">
+  <h2>Escribir una reseña</h2>
+
+  <form id="reviewForm">
+    <input type="hidden" id="movieId" value="{{ movie.movieId }}">
+
+    <label>Tu nombre</label>
+    <input type="text" id="username" class="input" placeholder="Opcional">
+
+    <label>Tu calificación</label>
+    <div id="starSelector" class="star-select">
+      <span data-value="1">☆</span>
+      <span data-value="2">☆</span>
+      <span data-value="3">☆</span>
+      <span data-value="4">☆</span>
+      <span data-value="5">☆</span>
+    </div>
+    <input type="hidden" id="rating" value="0">
+    <button class="btn" id="watchBtn">+ Mi Lista</button>
+    <label>Comentario</label>
+    <textarea id="comment" class="input" placeholder="Escribe tu opinión"></textarea>
+
+    <button class="btn" type="submit">Enviar reseña</button>
+  </form>
+</section>
+
+
+
+<!-- LISTA DE RESEÑAS -->
+<section class="container review-section">
+  <h2>Reseñas de usuarios</h2>
+
+  <div id="reviewList">
+    {% for r in reviews.reviews %}
+      <div class="review-card">
+        <div class="review-header">
+          <strong>{{ r.username }}</strong>
+
+          <span class="stars">
+            {% for i in range(1, 6) %}
+              {% if i <= r.rating %}★{% else %}☆{% endif %}
+            {% endfor %}
+          </span>
+        </div>
+
+        <p>{{ r.comment }}</p>
+        <span class="muted">{{ r.createdAt[:10] }}</span>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+
+
+<script>
+// ⭐ Selector de estrellas
+const starSelector = document.querySelectorAll("#starSelector span");
+const ratingInput = document.getElementById("rating");
+
+starSelector.forEach(star => {
+  star.addEventListener("click", () => {
+    const value = star.getAttribute("data-value");
+    ratingInput.value = value;
+
+    starSelector.forEach(s => s.textContent = "☆");
+    for (let i = 0; i < value; i++) {
+      starSelector[i].textContent = "★";
+    }
+  });
+});
+
+
+// ⛅ Enviar reseña SIN recargar
+document.getElementById("reviewForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const movieId = document.getElementById("movieId").value;
+  const username = document.getElementById("username").value;
+  const rating = Number(document.getElementById("rating").value);
+  const comment = document.getElementById("comment").value;
+
+  if (rating === 0) {
+    alert("Selecciona una calificación ⭐");
+    return;
+  }
+
+  const res = await fetch("http://localhost:4000/api/reviews", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ movieId, rating, comment, username })
+  });
+
+  const data = await res.json();
+
+  if (data.success) {
+    const r = data.review;
+
+    const newReview = `
+      <div class="review-card">
+        <div class="review-header">
+          <strong>${r.username}</strong>
+          <span class="stars">
+            ${"★".repeat(r.rating)}${"☆".repeat(5 - r.rating)}
+          </span>
+        </div>
+        <p>${r.comment}</p>
+        <span class="muted">${r.createdAt.slice(0, 10)}</span>
+      </div>
+    `;
+
+    document.getElementById("reviewList").insertAdjacentHTML("afterbegin", newReview);
+
+    // limpiar formulario
+    document.getElementById("reviewForm").reset();
+    ratingInput.value = 0;
+    starSelector.forEach(s => s.textContent = "☆");
+  }
+});
+</script>
+
+{% endblock %}

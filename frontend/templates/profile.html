@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <h1>Mi Perfil</h1>
+
+  <div class="profile-box">
+    <img id="avatarImg" src="" class="avatar-large">
+
+    <div>
+      <p><strong>Usuario:</strong> <span id="usernameTxt"></span></p>
+      <p><strong>Email:</strong> <span id="emailTxt"></span></p>
+    </div>
+  </div>
+
+  <h2>Editar Perfil</h2>
+
+  <form id="updateForm">
+    <label>Usuario</label>
+    <input id="username" type="text">
+
+    <label>Email</label>
+    <input id="email" type="email">
+
+    <label>Avatar (URL)</label>
+    <input id="avatar" type="text">
+
+    <button class="btn">Actualizar</button>
+  </form>
+
+  <h2>Cambiar Contraseña</h2>
+
+  <form id="passwordForm">
+    <label>Contraseña Actual</label>
+    <input id="currentPassword" type="password">
+
+    <label>Nueva Contraseña</label>
+    <input id="newPassword" type="password">
+
+    <button class="btn btn-danger">Cambiar Contraseña</button>
+  </form>
+
+  <h2>Estadísticas</h2>
+  <ul>
+    <li>Total reseñas: <span id="totalReviews"></span></li>
+    <li>Promedio estrellas: <span id="avgStars"></span></li>
+    <li>Watchlist: <span id="watchlistCount"></span></li>
+  </ul>
+</div>
+
+<script src="/static/profile.js"></script>
+{% endblock %}

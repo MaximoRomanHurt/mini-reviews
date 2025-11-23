@@ -1,0 +1,54 @@
+{# frontend/templates/login.html #}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Iniciar sesión</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Iniciar sesión</h1>
+
+    <form id="loginForm">
+      <label>Email</label>
+      <input id="email" type="email" required>
+
+      <label>Password</label>
+      <input id="password" type="password" required>
+
+      <button class="btn" type="submit">Entrar</button>
+    </form>
+
+    <p>¿No tienes cuenta? <a href="{{ url_for('register_page') }}">Regístrate</a></p>
+  </div>
+
+<script>
+const BACKEND_BASE = "{{ (os.environ.get('BACKEND_BASE') or 'http://localhost:4000/api') }}";
+
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const payload = {
+    email: document.getElementById('email').value.trim(),
+    password: document.getElementById('password').value
+  };
+
+  const res = await fetch(BACKEND_BASE + '/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+
+  const data = await res.json();
+  if (res.ok) {
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('user', JSON.stringify(data.user));
+    window.location.href = '/';
+  } else {
+    alert(data.message || 'Credenciales inválidas');
+  }
+});
+</script>
+</body>
+</html>

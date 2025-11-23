@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <h1>Resultados para: "{{ q }}"</h1>
+
+  <h2>Películas</h2>
+  <div class="media-grid" id="movieResults"></div>
+
+  <h2>Series</h2>
+  <div class="media-grid" id="tvResults"></div>
+</div>
+
+<script src="/static/search.js"></script>
+{% endblock %}
