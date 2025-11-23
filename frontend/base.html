@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Mini Reviews{% endblock %}</title>
+
+    <!-- CSS principal -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+    <!-- Puedes agregar otros CSS si los tienes -->
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='otro.css') }}"> -->
+</head>
+<body>
+
+    <!-- Contenido principal -->
+    {% block content %}{% endblock %}
+
+    <!-- Scripts JS generales -->
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+    <!-- Otros scripts opcionales -->
+    <!-- <script src="{{ url_for('static', filename='otro.js') }}"></script> -->
+    
+</body>
+</html>
