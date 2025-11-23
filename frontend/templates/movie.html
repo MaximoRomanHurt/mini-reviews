@@ -3,10 +3,10 @@
 {% block content %}
 <a href="/">← Volver</a>
 
-<div class="movie-backdrop" style="background-image: url('{{ movie.backdropPath }}')">
+<div class="movie-backdrop" style="background-image: url('{{ movie.backdropPath if movie.backdropPath else url_for('static', filename='images/back-default.jpg') }}')">
   <div class="backdrop-overlay">
     <div class="container movie-hero">
-      <img class="movie-poster" src="{{ movie.posterPath }}" alt="{{ movie.title }}">
+      <img class="movie-poster" src="{{ movie.posterPath if movie.posterPath else url_for('static', filename='images/poster-default.jpg') }}" alt="{{ movie.title }}">
 
       <div class="movie-meta">
         <h1>{{ movie.title }} <small>({{ movie.year }})</small></h1>
@@ -23,8 +23,6 @@
     </div>
   </div>
 </div>
-
-
 
 <!-- FORMULARIO DE RESEÑA -->
 <section class="container review-section">
@@ -53,8 +51,6 @@
   </form>
 </section>
 
-
-
 <!-- LISTA DE RESEÑAS -->
 <section class="container review-section">
   <h2>Reseñas de usuarios</h2>
@@ -64,22 +60,18 @@
       <div class="review-card">
         <div class="review-header">
           <strong>{{ r.username }}</strong>
-
           <span class="stars">
             {% for i in range(1, 6) %}
               {% if i <= r.rating %}★{% else %}☆{% endif %}
             {% endfor %}
           </span>
         </div>
-
         <p>{{ r.comment }}</p>
         <span class="muted">{{ r.createdAt[:10] }}</span>
       </div>
     {% endfor %}
   </div>
 </section>
-
-
 
 <script>
 // ⭐ Selector de estrellas
@@ -97,7 +89,6 @@ starSelector.forEach(star => {
     }
   });
 });
-
 
 // ⛅ Enviar reseña SIN recargar
 document.getElementById("reviewForm").addEventListener("submit", async (e) => {
